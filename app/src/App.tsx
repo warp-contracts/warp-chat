@@ -3,7 +3,8 @@ import Chat from './pages/Chat';
 import { ChakraProvider, Box } from '@chakra-ui/react';
 import theme from './theme';
 import { createContext } from 'react';
-import { WarpFactory, Warp, Contract } from 'warp-contracts';
+//@ts-ignore
+import { WarpFactory, Warp, Contract } from 'warp-contracts/web';
 import '@fontsource/noto-sans-phoenician';
 
 interface WarpType {
