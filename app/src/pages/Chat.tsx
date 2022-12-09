@@ -1,6 +1,5 @@
 import './Chat.css';
 import { Box } from '@chakra-ui/react';
-import { Button } from '@chakra-ui/react';
 import { Table, Tbody, Tr, Td, TableContainer } from '@chakra-ui/react';
 import { useState, useEffect, useContext } from 'react';
 import { subscribe, initPubSub } from 'warp-contracts-pubsub';
@@ -166,7 +165,7 @@ function Chat() {
                     placeholder="Write your message"
                     {...register('name')}
                   />
-                  <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
+                  {/* <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage> */}
                 </FormControl>
                 <MainButton size="md">Send</MainButton>
               </Box>
