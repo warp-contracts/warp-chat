@@ -34,7 +34,7 @@ function Chat() {
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [registrationNameModalOpen, setRegistrationNameModalOpen] = useState(false);
   const [wcnsButton, setWcnsButton] = useState(false);
-  const [wcnsState, setWcnsState] = useState(false);
+  const [wcnsState, setWcnsState] = useState<{ names: any }>({ names: [] });
   const parentRef = useRef();
 
   const {
