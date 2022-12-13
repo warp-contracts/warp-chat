@@ -13,13 +13,17 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@fontsource/noto-sans-phoenician": "^4.5.8",
+    "@tanstack/react-virtual": "3.0.0-beta.30",
     "arweave-wallet-connector": "^0.0.31",
+    "ethers": "^5.7.2",
     "framer-motion": "^7.6.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.40.0",
     "warp-contracts": "^1.2.32",
-    "warp-contracts-pubsub": "^1.0.4"
+    "warp-contracts-plugin-signature": "^1.0.7",
+    "warp-contracts-pubsub": "^1.0.4",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/react": "^18.0.24",

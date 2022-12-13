@@ -8,9 +8,20 @@ const theme = extendTheme({
     blue: '#6880fe',
     purple: '#9b7cf9',
     darkgreen: '#008000',
+    lightpurple: '#D7A1F9',
   },
   fonts: {
     body: `'Noto Sans Phoenician', sans-serif`,
+  },
+  components: {
+    Modal: {
+      baseStyle: (props) => ({
+        dialog: {
+          bg: 'lightpurple',
+          color: 'white',
+        },
+      }),
+    },
   },
 });
 

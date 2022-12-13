@@ -1,6 +1,11 @@
 import { Button } from '@chakra-ui/react';
 
-function MainButton(props: { size?: string; handleClick?: any; children: string }) {
+function MainButton(props: {
+  size?: string;
+  handleClick?: any;
+  children: string;
+  type?: 'button' | 'submit' | 'reset';
+}) {
   return (
     <Button
       bg="blue"
@@ -11,6 +16,7 @@ function MainButton(props: { size?: string; handleClick?: any; children: string 
       borderRadius="none"
       boxShadow="7px 5px black"
       onClick={() => props.handleClick && props.handleClick()}
+      type={props.type}
     >
       {props.children}
     </Button>

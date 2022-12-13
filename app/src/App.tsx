@@ -9,19 +9,25 @@ import '@fontsource/noto-sans-phoenician';
 
 interface WarpType {
   warp: Warp;
-  contractId: string;
+  chatContractId: string;
+  chatNsContractId: string;
   contract: Contract;
+  wcnsContract: Contract;
 }
 
 export const WarpContext = createContext<WarpType>({} as WarpType);
 function App() {
   const warp = WarpFactory.forMainnet();
-  const contractId = 'Xr-9ZB1GnjNoZAxXYpE9foVDq8rvX4WwEzK3AoRvdIk';
-  const contract = warp.contract(contractId);
+  const chatContractId = 'nKPexNKcaQwT4zOODaQYUNt5-bPiqIUi9DQ6dmP7-7A';
+  const chatNsContractId = 'xjPIxVcjwKcqaICCL20AJFqNk6OUtlRQ_VyhvXmp1LQ';
+  const contract = warp.contract(chatContractId);
+  const wcnsContract = warp.contract(chatNsContractId);
   const warpContext = {
     warp,
-    contractId,
+    chatContractId,
     contract,
+    chatNsContractId,
+    wcnsContract,
   };
   return (
     <ChakraProvider theme={theme}>

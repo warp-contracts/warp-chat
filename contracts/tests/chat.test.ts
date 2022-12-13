@@ -3,12 +3,12 @@ import { JWKInterface } from 'arweave/node/lib/wallet';
 import { LoggerFactory, Warp, WarpFactory, Contract } from 'warp-contracts';
 import fs from 'fs';
 import path from 'path';
-import { ContractState } from '../src/contracts/types/types';
+import { ContractState } from '../src/contractChat/types/types';
 
 jest.setTimeout(30000);
 Date.now = jest.fn(() => 1487076708000);
 
-describe('Testing Hello contract', () => {
+describe('Testing Chat contract', () => {
   let ownerWallet: JWKInterface;
   let owner: string;
 
@@ -16,7 +16,7 @@ describe('Testing Hello contract', () => {
 
   let arlocal: ArLocal;
   let warp: Warp;
-  let hello: Contract<ContractState>;
+  let contract: Contract<ContractState>;
 
   let contractSrc: string;
 
@@ -34,7 +34,7 @@ describe('Testing Hello contract', () => {
 
     initialState = { messages: [] };
 
-    contractSrc = fs.readFileSync(path.join(__dirname, '../dist/contract.js'), 'utf8');
+    contractSrc = fs.readFileSync(path.join(__dirname, '../dist/contractChat/contract.js'), 'utf8');
 
     ({ contractTxId: contractId } = await warp.deploy({
       wallet: ownerWallet,
@@ -42,7 +42,7 @@ describe('Testing Hello contract', () => {
       src: contractSrc,
     }));
     console.log('Deployed contract: ', contractId);
-    hello = warp.contract<ContractState>(contractId).connect(ownerWallet);
+    contract = warp.contract<ContractState>(contractId).connect(ownerWallet);
   });
 
   afterAll(async () => {
@@ -55,20 +55,20 @@ describe('Testing Hello contract', () => {
     expect(contractTx).not.toBeNull();
   });
 
-  it('should read Hello state', async () => {
-    expect((await hello.readState()).cachedValue.state).toEqual(initialState);
+  it('should read contract state', async () => {
+    expect((await contract.readState()).cachedValue.state).toEqual(initialState);
   });
 
   it('should not post with no content', async () => {
-    await expect(hello.writeInteraction({ function: 'write' }, { strict: true })).rejects.toThrow(
+    await expect(contract.writeInteraction({ function: 'write' }, { strict: true })).rejects.toThrow(
       'Cannot create interaction: Creator must provide a message.'
     );
   });
 
   it('should properly post message', async () => {
-    await hello.writeInteraction({ function: 'write', content: 'Asia' });
+    await contract.writeInteraction({ function: 'write', content: 'Asia' });
 
-    const { cachedValue } = await hello.readState();
+    const { cachedValue } = await contract.readState();
     expect(cachedValue.state.messages[0]).toEqual({
       id: 1,
       content: 'Asia',

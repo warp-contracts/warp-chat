@@ -12,6 +12,10 @@ export const write = async (
     throw new ContractError(`Creator must provide a message.`);
   }
 
+  if (content.length > 280) {
+    throw new ContractError(`Message too long.`);
+  }
+
   if (state['messages'].length == 500) {
     state['messages'].shift();
     state['messages'].forEach((m) => (m.id = m.id - 1));
