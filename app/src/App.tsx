@@ -13,13 +13,15 @@ interface WarpType {
   chatNsContractId: string;
   contract: Contract;
   wcnsContract: Contract;
+  chatContractSourceId: string;
 }
 
 export const WarpContext = createContext<WarpType>({} as WarpType);
 function App() {
   const warp = WarpFactory.forMainnet();
   const chatContractId = 'nKPexNKcaQwT4zOODaQYUNt5-bPiqIUi9DQ6dmP7-7A';
-  const chatNsContractId = 'xjPIxVcjwKcqaICCL20AJFqNk6OUtlRQ_VyhvXmp1LQ';
+  const chatNsContractId = 'Wss7NAAIrvkF9fliWYWpEhJ7LTX_Fug22rIUWNbs02I';
+  const chatContractSourceId = 'KT4-pPoKUspcR9xkcClXAUAC6JmU4x-5KknlzynEVNw';
   const contract = warp.contract(chatContractId);
   const wcnsContract = warp.contract(chatNsContractId);
   const warpContext = {
@@ -28,6 +30,7 @@ function App() {
     contract,
     chatNsContractId,
     wcnsContract,
+    chatContractSourceId,
   };
   return (
     <ChakraProvider theme={theme}>

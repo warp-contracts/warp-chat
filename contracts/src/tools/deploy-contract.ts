@@ -14,9 +14,9 @@ import { WarpFactory } from 'warp-contracts';
     if (!fs.existsSync(walletDir)) fs.mkdirSync(walletDir);
     fs.writeFileSync(walletFilename, JSON.stringify(wallet));
   }
-  const contractSrc = fs.readFileSync(path.join(__dirname, '../../dist/contractChat/contract.js'), 'utf8');
+  const contractSrc = fs.readFileSync(path.join(__dirname, '../../dist/contractChatNameService/contract.js'), 'utf8');
 
-  const initialState = { messages: [] };
+  const initialState = { names: {} };
 
   console.log('Deployment started');
   const { contractTxId } = await warp.deploy({

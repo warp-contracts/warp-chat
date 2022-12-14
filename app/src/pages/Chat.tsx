@@ -1,42 +1,33 @@
 import './Chat.css';
-import { Box } from '@chakra-ui/react';
+import { Box, ModalBody, propNames } from '@chakra-ui/react';
 import { Table, Tbody, Tr, Td, TableContainer } from '@chakra-ui/react';
 import { useState, useEffect, useContext, useRef } from 'react';
 import { subscribe, initPubSub } from 'warp-contracts-pubsub';
-import { Input } from '@chakra-ui/react';
-import { FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { ArweaveWebWallet } from 'arweave-wallet-connector';
 import { WarpContext } from '../App';
 import MainButton from '../components/MainButton/MainButton';
-import { useToast } from '@chakra-ui/react';
-import Wallet from '../components/Wallet/Wallet';
 import { evmSignature } from 'warp-contracts-plugin-signature';
-import MainForm from '../components/Input/MainForm';
-import RegisterName from '../components/RegisterName/RegisterName';
+import MainForm from '../components/MainForm/MainForm';
 import MetaMaskOnboarding from '@metamask/onboarding';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import MainModal from '../components/MainModal/MainModal';
+import { useToast } from '@chakra-ui/react';
+import MessagesList from '../components/MessagesList/MessagesList';
+import ChannelsList from '../components/ChannelsList/ChannelsList';
 
 initPubSub();
 
 function Chat() {
-  const { contract, chatContractId, chatNsContractId, wcnsContract } = useContext(WarpContext);
-  const toast = useToast({
-    containerStyle: {
-      border: '1px solid #E53E3E',
-      backgroundColor: '#E53E3E',
-      marginTop: '15px',
-    },
-  });
-
+  const { contract, chatNsContractId, wcnsContract, chatContractSourceId, warp } = useContext(WarpContext);
+  const [channels, setChannels] = useState(null);
   const [wallet, setWallet] = useState<any>({ address: '', signatureType: '', name: '' });
   const [messages, setMessages] = useState([]);
-  const [walletModalOpen, setWalletModalOpen] = useState(false);
+  const [walletModalOpen, setWalletModalOpen] = useState(true);
+  const [channelModalOpen, setChannelModalOpen] = useState(false);
   const [registrationNameModalOpen, setRegistrationNameModalOpen] = useState(false);
   const [wcnsButton, setWcnsButton] = useState(false);
   const [wcnsState, setWcnsState] = useState<{ names: any }>({ names: [] });
-  const parentRef = useRef();
-
+  const [currentContract, setCurrentContract] = useState({ id: '', contract: null });
   const {
     handleSubmit,
     register,
@@ -46,14 +37,30 @@ function Chat() {
   } = useForm();
 
   useEffect(() => {
+    fetchChannels();
+  }, []);
+
+  async function fetchChannels() {
+    const response = await fetch(
+      `https://d1o5nlqr4okus2.cloudfront.net/gateway/contracts-by-source?id=${chatContractSourceId}`
+    ).then((res) => {
+      return res.json();
+    });
+    const contractChannels = response.contracts.map((c) => c.contractId);
+    setChannels(contractChannels);
+    !currentContract.id &&
+      setCurrentContract({ id: contractChannels[0], contract: warp.contract(contractChannels[0]) });
+  }
+
+  useEffect(() => {
     async function fetchContractState() {
-      const response = await fetch(`https://dre-1.warp.cc/contract?id=${chatContractId}`).then((res) => {
+      const response = await fetch(`https://dre-1.warp.cc/contract?id=${currentContract.id}`).then((res) => {
         return res.json();
       });
       setMessages(response.state.messages);
     }
-    fetchContractState();
-  }, []);
+    currentContract.id && fetchContractState();
+  }, [currentContract.id]);
 
   useEffect(() => {
     async function fetchWcnsContractState() {
@@ -68,28 +75,26 @@ function Chat() {
   useEffect(() => {
     async function doSubscribe() {
       await subscribe(
-        `states/${chatContractId}`,
+        `states/${currentContract.id}`,
         ({ data }: any) => setMessages(JSON.parse(data).state.messages),
         console.error
       );
     }
-    doSubscribe();
-  }, []);
-
-  const rowVirtualizer = useVirtualizer({
-    count: messages.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 100,
-  });
+    currentContract.id && doSubscribe();
+  }, [currentContract.id]);
 
   useEffect(() => {
-    rowVirtualizer.scrollToIndex(messages.length);
-  }, [messages]);
+    const isNameAssigned =
+      wcnsState.names && Object.keys(wcnsState.names).find((key) => key == wallet.address.toLowerCase());
+    if (!isNameAssigned) {
+      setWcnsButton(true);
+    }
+  }, [wallet]);
 
   async function onSubmit(values: any) {
     try {
       if (values.message.length > 280) {
-        toast({
+        errorToast({
           title: 'Message too long.',
           status: 'error',
           duration: 3000,
@@ -97,10 +102,11 @@ function Chat() {
           position: 'top',
         });
       }
-      await contract.writeInteraction({ function: 'write', content: values.message });
+      await currentContract.contract
+        .connect(wallet.signatureType == 'arweave' ? 'use_wallet' : { signer: evmSignature, signatureType: 'ethereum' })
+        .writeInteraction({ function: 'write', content: values.message });
     } catch (e) {
-      console.log(e);
-      toast({
+      errorToast({
         title: 'Wallet not connected.',
         status: 'error',
         duration: 3000,
@@ -113,19 +119,17 @@ function Chat() {
 
   async function handleArweaveApp() {
     const wallet = new ArweaveWebWallet();
-
     wallet.setUrl('arweave.app');
     await wallet.connect();
-    contract.connect('use_wallet');
+    currentContract.contract.connect('use_wallet');
     const address = wallet.namespaces.arweaveWallet.getActiveAddress();
     setWallet({ address, signatureType: 'arweave', name: wcnsState.names[address.toLocaleLowerCase()] || '' });
     setWalletModalOpen(false);
-    // await checkWcns();
   }
 
   async function handleMetamask() {
     if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
-      toast({
+      errorToast({
         title: 'Metamask not detected.',
         status: 'error',
         duration: 3000,
@@ -135,7 +139,7 @@ function Chat() {
       return;
     }
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    await contract.connect({
+    await currentContract.contract.connect({
       signer: evmSignature,
       signatureType: 'ethereum',
     });
@@ -146,31 +150,9 @@ function Chat() {
       name: wcnsState.names[accounts[0].toLowerCase()] || '',
     });
     setWalletModalOpen(false);
-    // await checkWcns();
   }
-
-  function handleOpenWalletModal() {
-    setWalletModalOpen(true);
-  }
-
-  // async function checkWcns() {
-  //   const isNameAssigned = Object.keys(wcnsState.names).find((key) => key == wallet.address);
-  //   if (isNameAssigned) {
-  //   } else {
-  //     setWcnsButton(true);
-  //   }
-  // }
-
-  useEffect(() => {
-    const isNameAssigned =
-      wcnsState.names && Object.keys(wcnsState.names).find((key) => key == wallet.address.toLowerCase());
-    if (!isNameAssigned) {
-      setWcnsButton(true);
-    }
-  }, [wallet]);
 
   async function onSubmitRegistration(values: any) {
-    console.log(values);
     if (wallet.signatureType == 'arweave') {
       await wcnsContract.connect('use_wallet');
     } else {
@@ -178,7 +160,7 @@ function Chat() {
     }
     try {
       if (Object.keys(wcnsState.names).find((key) => wcnsState.names[key] == values.name)) {
-        toast({
+        errorToast({
           title: 'Name already registered.',
           status: 'error',
           duration: 3000,
@@ -187,11 +169,11 @@ function Chat() {
         });
         return;
       }
-      await wcnsContract.writeInteraction({ function: 'registerName', name: values.name });
+      await wcnsContract.writeInteraction({ function: 'registerName', name: values.name, id: wallet.address });
       setRegistrationNameModalOpen(false);
       setWallet({ ...wallet, name: values.name });
     } catch (e) {
-      toast({
+      errorToast({
         title: 'Error during name registration.',
         status: 'error',
         duration: 3000,
@@ -202,22 +184,128 @@ function Chat() {
     }
     reset();
   }
+
+  async function onSubmitChannelRegistration(values: any) {
+    if (Object.keys(wcnsState.names).find((key) => wcnsState.names[key] == values.channelName)) {
+      errorToast({
+        title: 'Name already registered.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+      return;
+    }
+    const initialState = { messages: [] };
+    try {
+      const { contractTxId } = await warp.createContract.deployFromSourceTx({
+        wallet: wallet.signatureType == 'arweave' ? 'use_wallet' : { signer: evmSignature, signatureType: 'ethereum' },
+        initState: JSON.stringify(initialState),
+        srcTxId: chatContractSourceId,
+      });
+
+      try {
+        await wcnsContract
+          .connect(
+            wallet.signatureType == 'arweave' ? 'use_wallet' : { signer: evmSignature, signatureType: 'ethereum' }
+          )
+          .writeInteraction({ function: 'registerName', name: values.channelName, id: contractTxId });
+      } catch (e) {
+        errorToast({
+          title: 'Wallet not connected.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
+      }
+      setChannelModalOpen(false);
+      successToast({
+        title: `Channel ${values.channelName} created.`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+      await fetchChannels();
+      setCurrentContract({ id: contractTxId, contract: warp.contract(contractTxId) });
+    } catch (e) {
+      errorToast({
+        title: 'Error during channel creation.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+      setChannelModalOpen(false);
+    }
+  }
+
+  const errorToast = useToast({
+    containerStyle: {
+      border: '1px solid #E53E3E',
+      backgroundColor: '#E53E3E',
+      marginTop: '15px',
+    },
+  });
+
+  const successToast = useToast({
+    containerStyle: {
+      border: '1px solid #00D100',
+      backgroundColor: '#00D100',
+      marginTop: '15px',
+    },
+  });
+
   return (
     <Box p={5} height="100%">
-      <Wallet
+      <MainModal
         isOpen={walletModalOpen}
         onClose={() => setWalletModalOpen(false)}
-        handleArweaveApp={handleArweaveApp}
-        handleMetamask={handleMetamask}
-      />
-      <RegisterName
+        header={'Choose wallet'}
+        closeOnOverlay={false}
+        closeButton={false}
+      >
+        <ModalBody display="flex" justifyContent="space-between">
+          <MainButton handleClick={handleArweaveApp}>arweave.app</MainButton>
+          <MainButton handleClick={handleMetamask}>Metamask</MainButton>
+        </ModalBody>
+      </MainModal>
+
+      <MainModal
         isOpen={registrationNameModalOpen}
         onClose={() => setRegistrationNameModalOpen(false)}
-        handleSubmit={handleSubmit(onSubmitRegistration)}
-        register={register}
-      />
+        header={'Register name'}
+        closeOnOverlay={true}
+        closeButton={true}
+      >
+        <ModalBody>
+          <MainForm
+            handleSubmit={handleSubmit(onSubmitRegistration)}
+            register={register}
+            placeholder={'Write name'}
+            id={'name'}
+          />
+        </ModalBody>
+      </MainModal>
+      <MainModal
+        isOpen={channelModalOpen}
+        onClose={() => setChannelModalOpen(false)}
+        header={'Create channel'}
+        closeOnOverlay={true}
+        closeButton={true}
+      >
+        <ModalBody>
+          <MainForm
+            handleSubmit={handleSubmit(onSubmitChannelRegistration)}
+            register={register}
+            placeholder={'Write channel name'}
+            id={'channelName'}
+          />
+        </ModalBody>
+      </MainModal>
       <Box mb={3} display="flex" justifyContent="space-between">
-        <MainButton>Create new channel</MainButton>
+        <MainButton handleClick={() => setChannelModalOpen(true)}>Create new channel</MainButton>
         {wallet.address ? (
           <Box display="flex" alignItems="center">
             <Box color="blue">{wallet.name ? wallet.name : wallet.address}</Box>
@@ -236,140 +324,22 @@ function Chat() {
             )}
           </Box>
         ) : (
-          <MainButton handleClick={handleOpenWalletModal}>Connect wallet</MainButton>
+          <div />
         )}
       </Box>
       <Box display="flex" width="100%" height="90%">
-        <TableContainer width="25%" bg="orange" boxShadow="4px 4px black">
-          <Table variant="simple">
-            <Tbody>
-              <Tr>
-                <Td>Public</Td>
-              </Tr>
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <Box width="25%" bg="orange" boxShadow="4px 4px black">
+          {channels && (
+            <ChannelsList
+              listEl={channels}
+              stateEl={wcnsState}
+              setCurrentContract={setCurrentContract}
+              currentContract={currentContract.id}
+            />
+          )}
+        </Box>
         <Box width="75%" position="relative" bg="purple" ml={5} pr={5} boxShadow="4px 4px black">
-          <Box
-            ref={parentRef}
-            height="82%"
-            px={10}
-            mt={10}
-            overflow="auto"
-            css={{
-              '&::-webkit-scrollbar': {
-                width: '10px',
-              },
-              '&::-webkit-scrollbar-track': {
-                width: '10px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: 'white',
-                borderRadius: 'none',
-              },
-            }}
-          >
-            {/* The large inner element to hold all of the items */}
-            <Box
-              style={{
-                height: `${rowVirtualizer.getTotalSize()}px`,
-                width: '100%',
-                position: 'relative',
-              }}
-            >
-              {/* Only the visible items in the virtualizer, manually positioned to be in view */}
-              {rowVirtualizer.getVirtualItems().map((virtualItem) => (
-                <div
-                  key={virtualItem.key}
-                  data-index={virtualItem.index}
-                  ref={rowVirtualizer.measureElement}
-                  className={virtualItem.index % 2 ? 'ListItemOdd' : 'ListItemEven'}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    transform: `translateY(${virtualItem.start}px)`,
-                  }}
-                >
-                  <Box key={messages[virtualItem.index].id} bg="green" p={2} boxShadow="7px 5px black" mb={4}>
-                    <Box color="black" fontSize="x-small" fontWeight="500">
-                      {(wcnsState.names && wcnsState.names[messages[virtualItem.index].creator.toLowerCase()]) ||
-                        messages[virtualItem.index].creator}
-                    </Box>
-                    {messages[virtualItem.index].content}
-                  </Box>
-                </div>
-              ))}
-            </Box>
-          </Box>
-          {/* <VirtualScroll
-            rows={[<div />, <div />]}
-            // rows={messages.map((m: any) => {
-            //   return (
-            //     // return walletAddress == m.creator ? (
-            //     <Box key={m.id} bg="green" p={2} boxShadow="7px 5px black" mb={4}>
-            //       <Box color="black" fontSize="x-small" fontWeight="500">
-            //         {(wcnsState.names && wcnsState.names[m.creator.toLowerCase()]) || m.creator}
-            //       </Box>
-            //       {m.content}
-            //     </Box>
-            //   );
-            // })}
-          /> */}
-
-          {/* <Box
-            overflowY="auto"
-            height="82%"
-            px={10}
-            mt={10}
-            display="flex"
-            flexDirection="column-reverse"
-            css={{
-              '&::-webkit-scrollbar': {
-                width: '10px',
-              },
-              '&::-webkit-scrollbar-track': {
-                width: '10px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: 'white',
-                borderRadius: 'none',
-              },
-            }}
-          >
-            <Box
-              //   overflowY="scroll"
-
-              width="100%"
-
-              //   display="flex"
-              //   justifyContent="flex-end"
-              //   flexDirection="column"
-            >
-              {messages &&
-                messages.map((m: any) => {
-                  return (
-                    // return walletAddress == m.creator ? (
-                    <Box key={m.id} bg="green" p={2} boxShadow="7px 5px black" mb={4}>
-                      <Box color="black" fontSize="x-small" fontWeight="500">
-                        {(wcnsState.names && wcnsState.names[m.creator.toLowerCase()]) || m.creator}
-                      </Box>
-                      {m.content}
-                    </Box>
-                  );
-                  // ) : (
-                  //   <Box key={m.id} bg="darkgreen" p={2} boxShadow="7px 5px black" mb={4}>
-                  //     <Box color="black" fontSize="x-small" fontWeight="500">
-                  //       {m.creator}
-                  //     </Box>
-                  //     {m.content}
-                  //   </Box>
-                  // );
-                })}
-              <div ref={dummyScroll} />
-            </Box>
-          </Box> */}
+          <MessagesList listEl={messages} stateEl={wcnsState} />
           <Box position="absolute" bottom={0} width="100%" p={4}>
             <MainForm
               handleSubmit={handleSubmit(onSubmit)}

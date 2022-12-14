@@ -9,6 +9,7 @@ const theme = extendTheme({
     purple: '#9b7cf9',
     darkgreen: '#008000',
     lightpurple: '#D7A1F9',
+    lightpink: '#FFDBE9',
   },
   fonts: {
     body: `'Noto Sans Phoenician', sans-serif`,

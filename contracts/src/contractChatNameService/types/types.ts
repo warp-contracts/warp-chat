@@ -17,6 +17,7 @@ export interface ContractInput {
   function: ContractFunction;
   name: string;
   creator: string;
+  id: string;
 }
 
 export type ContractFunction = 'registerName' | 'getName';

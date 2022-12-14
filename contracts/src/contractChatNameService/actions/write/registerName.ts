@@ -4,7 +4,7 @@ declare const ContractError;
 
 export const registerName = async (
   state: ContractState,
-  { caller, input: { name } }: ContractAction
+  { input: { name, id } }: ContractAction
 ): Promise<ContractResult> => {
   if (!name) {
     throw new ContractError('Name must be provided.');
@@ -19,7 +19,7 @@ export const registerName = async (
     throw new ContractError('Invalid name.');
   }
 
-  state.names[caller.toLowerCase()] = name;
+  state.names[id.toLowerCase()] = name;
 
   return { state };
 };
