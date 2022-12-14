@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react';
+import { useRef } from 'react';
 
 function MainModal(props: {
   isOpen: boolean;
@@ -16,8 +17,10 @@ function MainModal(props: {
   closeOnOverlay: boolean;
   closeButton: boolean;
 }) {
+  const initialRef = useRef(null);
+
   return (
-    <Modal closeOnOverlayClick={props.closeOnOverlay} isOpen={props.isOpen} onClose={props.onClose}>
+    <Modal trapFocus={false} closeOnOverlayClick={props.closeOnOverlay} isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{props.header}</ModalHeader>

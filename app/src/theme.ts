@@ -20,6 +20,7 @@ const theme = extendTheme({
         dialog: {
           bg: 'lightpurple',
           color: 'white',
+          borderRadius: 'none',
         },
       }),
     },

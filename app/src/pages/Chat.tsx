@@ -18,7 +18,7 @@ import ChannelsList from '../components/ChannelsList/ChannelsList';
 initPubSub();
 
 function Chat() {
-  const { contract, chatNsContractId, wcnsContract, chatContractSourceId, warp } = useContext(WarpContext);
+  const { chatNsContractId, wcnsContract, chatContractSourceId, warp } = useContext(WarpContext);
   const [channels, setChannels] = useState(null);
   const [wallet, setWallet] = useState<any>({ address: '', signatureType: '', name: '' });
   const [messages, setMessages] = useState([]);

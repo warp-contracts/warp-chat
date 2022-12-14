@@ -11,7 +11,6 @@ interface WarpType {
   warp: Warp;
   chatContractId: string;
   chatNsContractId: string;
-  contract: Contract;
   wcnsContract: Contract;
   chatContractSourceId: string;
 }
@@ -22,12 +21,10 @@ function App() {
   const chatContractId = 'nKPexNKcaQwT4zOODaQYUNt5-bPiqIUi9DQ6dmP7-7A';
   const chatNsContractId = 'Wss7NAAIrvkF9fliWYWpEhJ7LTX_Fug22rIUWNbs02I';
   const chatContractSourceId = 'KT4-pPoKUspcR9xkcClXAUAC6JmU4x-5KknlzynEVNw';
-  const contract = warp.contract(chatContractId);
   const wcnsContract = warp.contract(chatNsContractId);
   const warpContext = {
     warp,
     chatContractId,
-    contract,
     chatNsContractId,
     wcnsContract,
     chatContractSourceId,
