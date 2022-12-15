@@ -102,10 +102,12 @@ function Chat() {
           isClosable: true,
           position: 'top',
         });
+        return;
       }
       await currentContract.contract
         .connect(wallet.signatureType == 'arweave' ? 'use_wallet' : { signer: evmSignature, signatureType: 'ethereum' })
         .writeInteraction({ function: 'write', content: values.message });
+      reset();
     } catch (e) {
       errorToast({
         title: 'Wallet not connected.',
@@ -115,7 +117,6 @@ function Chat() {
         position: 'top',
       });
     }
-    reset();
   }
 
   async function handleArweaveApp() {
