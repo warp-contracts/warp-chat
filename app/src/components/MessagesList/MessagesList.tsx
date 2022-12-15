@@ -29,7 +29,7 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
           width: '10px',
         },
         '&::-webkit-scrollbar-thumb': {
-          background: 'white',
+          background: 'black',
           borderRadius: 'none',
         },
       }}
