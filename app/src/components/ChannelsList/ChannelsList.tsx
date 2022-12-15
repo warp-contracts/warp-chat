@@ -14,13 +14,13 @@ function ChannelsList(props: { listEl: any; stateEl: any; setCurrentContract: an
     estimateSize: () => 100,
   });
 
-  useEffect(() => {
-    virtualizer.scrollToIndex(props.listEl.length);
-  }, [props.listEl]);
   return (
     <Box
       ref={parentRef}
-      overflow="auto"
+      style={{
+        height: `100%`,
+        overflow: 'auto',
+      }}
       css={{
         '&::-webkit-scrollbar': {
           width: '10px',
@@ -29,12 +29,12 @@ function ChannelsList(props: { listEl: any; stateEl: any; setCurrentContract: an
           width: '10px',
         },
         '&::-webkit-scrollbar-thumb': {
-          background: 'white',
+          background: 'black',
           borderRadius: 'none',
         },
       }}
     >
-      <Box
+      <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,
           width: '100%',
@@ -79,7 +79,7 @@ function ChannelsList(props: { listEl: any; stateEl: any; setCurrentContract: an
             )}
           </div>
         ))}
-      </Box>
+      </div>
     </Box>
   );
 }

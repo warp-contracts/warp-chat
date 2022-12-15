@@ -63,14 +63,15 @@ function Chat() {
   }, [currentContract.id]);
 
   useEffect(() => {
-    async function fetchWcnsContractState() {
-      const response = await fetch(`https://dre-1.warp.cc/contract?id=${chatNsContractId}`).then((res) => {
-        return res.json();
-      });
-      setWcnsState(response.state);
-    }
     fetchWcnsContractState();
   }, [wallet]);
+
+  async function fetchWcnsContractState() {
+    const response = await fetch(`https://dre-1.warp.cc/contract?id=${chatNsContractId}`).then((res) => {
+      return res.json();
+    });
+    setWcnsState(response.state);
+  }
 
   useEffect(() => {
     async function doSubscribe() {
@@ -210,6 +211,17 @@ function Chat() {
             wallet.signatureType == 'arweave' ? 'use_wallet' : { signer: evmSignature, signatureType: 'ethereum' }
           )
           .writeInteraction({ function: 'registerName', name: values.channelName, id: contractTxId });
+        setChannelModalOpen(false);
+        successToast({
+          title: `Channel ${values.channelName} created.`,
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
+        await fetchWcnsContractState();
+        await fetchChannels();
+        setCurrentContract({ id: contractTxId, contract: warp.contract(contractTxId) });
       } catch (e) {
         errorToast({
           title: 'Wallet not connected.',
@@ -219,16 +231,6 @@ function Chat() {
           position: 'top',
         });
       }
-      setChannelModalOpen(false);
-      successToast({
-        title: `Channel ${values.channelName} created.`,
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-        position: 'top',
-      });
-      await fetchChannels();
-      setCurrentContract({ id: contractTxId, contract: warp.contract(contractTxId) });
     } catch (e) {
       errorToast({
         title: 'Error during channel creation.',
