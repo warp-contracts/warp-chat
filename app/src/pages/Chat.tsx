@@ -338,6 +338,7 @@ function Chat() {
               stateEl={wcnsState}
               setCurrentContract={setCurrentContract}
               currentContract={currentContract.id}
+              reset={reset}
             />
           )}
         </Box>

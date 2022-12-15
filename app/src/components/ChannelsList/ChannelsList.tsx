@@ -4,7 +4,13 @@ import { useContext, useEffect, useRef } from 'react';
 import { Divider } from '@chakra-ui/react';
 import { WarpContext } from '../../App';
 
-function ChannelsList(props: { listEl: any; stateEl: any; setCurrentContract: any; currentContract: string }) {
+function ChannelsList(props: {
+  listEl: any;
+  stateEl: any;
+  setCurrentContract: any;
+  currentContract: string;
+  reset: any;
+}) {
   const { warp } = useContext(WarpContext);
   const parentRef = useRef();
 
@@ -59,12 +65,13 @@ function ChannelsList(props: { listEl: any; stateEl: any; setCurrentContract: an
               <>
                 <Box
                   key={props.listEl[virtualItem.index]}
-                  onClick={() =>
+                  onClick={() => {
                     props.setCurrentContract({
                       id: props.listEl[virtualItem.index],
                       contract: warp.contract(props.listEl[virtualItem.index]),
-                    })
-                  }
+                    });
+                    props.reset();
+                  }}
                   cursor="pointer"
                   p={4}
                   bg={props.listEl[virtualItem.index] == props.currentContract ? 'lightpink' : ''}
