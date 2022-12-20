@@ -14,6 +14,7 @@ import MainModal from '../components/MainModal/MainModal';
 import { useToast } from '@chakra-ui/react';
 import MessagesList from '../components/MessagesList/MessagesList';
 import ChannelsList from '../components/ChannelsList/ChannelsList';
+import { Image } from '@chakra-ui/react';
 
 initPubSub();
 
@@ -307,15 +308,16 @@ function Chat() {
           />
         </ModalBody>
       </MainModal>
-      <Box mb={3} display="flex" justifyContent="space-between">
-        <MainButton handleClick={() => setChannelModalOpen(true)}>Create new channel</MainButton>
+      <Box mb={3} display="flex" justifyContent="space-between" height="72px">
+        <Box>
+          <Image src="../../src/assets/warp-logo.svg" height="60px" />
+        </Box>
         {wallet.address ? (
           <Box display="flex" alignItems="center">
-            <Box color="blue">{wallet.name ? wallet.name : wallet.address}</Box>
+            <Box color="buttonblue">{wallet.name ? wallet.name : wallet.address}</Box>
             {wcnsButton && (
               <Box ml="2">
                 <MainButton
-                  size="xs"
                   handleClick={() => {
                     setRegistrationNameModalOpen(true);
                     setFocus('name');
@@ -330,8 +332,15 @@ function Chat() {
           <div />
         )}
       </Box>
-      <Box display="flex" width="100%" height="90%">
-        <Box width="25%" bg="orange" boxShadow="4px 4px black">
+      <Box display="flex" width="100%" height="85%">
+        <Box
+          width="25%"
+          bg="linear-gradient(180deg, #F4E7F9 0%, #EED9F5 100%);"
+          boxShadow="5px 5px 0px rgba(31, 0, 156, 0.25);"
+          border=" 2px solid #240070;"
+          borderRadius="4px"
+          padding="37px 16px 37px 16px"
+        >
           {channels && (
             <ChannelsList
               listEl={channels}
@@ -339,17 +348,29 @@ function Chat() {
               setCurrentContract={setCurrentContract}
               currentContract={currentContract.id}
               reset={reset}
+              setChannelModalOpen={setChannelModalOpen}
             />
           )}
         </Box>
-        <Box width="75%" position="relative" bg="purple" ml={5} pr={5} boxShadow="4px 4px black">
+        <Box
+          width="75%"
+          position="relative"
+          bg="linear-gradient(180deg, #FEFFC7 0%, #FDFFA6 100%);"
+          border="2px solid #240070;"
+          ml={5}
+          pr={5}
+          pb={5}
+          boxShadow="5px 5px 0px rgba(31, 0, 156, 0.25);"
+          borderRadius="4px"
+        >
           <MessagesList listEl={messages} stateEl={wcnsState} />
-          <Box position="absolute" bottom={0} width="100%" p={4}>
+          <Box position="absolute" bottom={0} width="100%" paddingLeft="40px" paddingRight="70px" paddingBottom="20px">
             <MainForm
               handleSubmit={handleSubmit(onSubmit)}
               register={register}
               placeholder={'Write your message'}
               id={'message'}
+              message={true}
             />
           </Box>
         </Box>

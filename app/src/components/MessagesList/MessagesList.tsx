@@ -21,6 +21,7 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
       px={10}
       mt={10}
       overflow="auto"
+      paddingBottom="30px"
       css={{
         '&::-webkit-scrollbar': {
           width: '10px',
@@ -29,8 +30,8 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
           width: '10px',
         },
         '&::-webkit-scrollbar-thumb': {
-          background: 'black',
-          borderRadius: 'none',
+          background: '#240070',
+          borderRadius: '4px',
         },
       }}
     >
@@ -55,10 +56,29 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
               transform: `translateY(${virtualItem.start}px)`,
             }}
           >
-            <Box key={props.listEl[virtualItem.index].id} bg="green" p={2} boxShadow="7px 5px black" mb={4}>
-              <Box color="black" fontSize="x-small" fontWeight="500">
-                {(props.stateEl.names && props.stateEl.names[props.listEl[virtualItem.index].creator.toLowerCase()]) ||
-                  props.listEl[virtualItem.index].creator}
+            <Box
+              key={props.listEl[virtualItem.index].id}
+              bg="#E2FFBE;"
+              border="2px solid #240070;"
+              padding="8px 20px 12px 20px"
+              boxShadow="5px 5px 0px rgba(255, 156, 40, 0.35);"
+              borderRadius="4px"
+              mb={4}
+              fontWeight="600"
+              fontSize="16px"
+              lineHeight="22.4px"
+              color="#240070"
+            >
+              <Box fontWeight="400" fontSize="13px" lineHeight="19.5px" color="#2E6B64" display="flex">
+                <Box fontWeight="600">
+                  {(props.stateEl.names &&
+                    props.stateEl.names[props.listEl[virtualItem.index].creator.toLowerCase()]) ||
+                    props.listEl[virtualItem.index].creator}
+                </Box>{' '}
+                <Box>
+                  &nbsp;|&nbsp;
+                  {new Date(parseInt(props.listEl[virtualItem.index].timestamp)).toLocaleString()}
+                </Box>
               </Box>
               {props.listEl[virtualItem.index].content}
             </Box>

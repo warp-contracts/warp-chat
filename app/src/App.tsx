@@ -5,7 +5,10 @@ import theme from './theme';
 import { createContext } from 'react';
 //@ts-ignore
 import { WarpFactory, Warp, Contract } from 'warp-contracts/web';
-import '@fontsource/noto-sans-phoenician';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/500.css';
 
 interface WarpType {
   warp: Warp;
@@ -32,7 +35,7 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <WarpContext.Provider value={warpContext}>
-        <Box className="App" bg="yellow" height="100vh">
+        <Box className="App" bg="linear-gradient(180deg, #E4D5F7 0%, #D1B7F2 100%);" height="100vh">
           <Chat />
         </Box>
       </WarpContext.Provider>

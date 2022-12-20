@@ -2089,6 +2089,11 @@
   resolved "https://registry.yarnpkg.com/@fontsource/noto-sans-phoenician/-/noto-sans-phoenician-4.5.8.tgz#5f5743599c823882af04134f477156966c41b867"
   integrity sha512-/JbMHotVogR7EHlHCH2ihEOPUH4pYA49KL5TWoIujIDSuGy4lkQoTt2ZFftCFdrnM+siUymMdpZRKYb8nvjMfA==
 
+"@fontsource/poppins@^4.5.10":
+  version "4.5.10"
+  resolved "https://registry.yarnpkg.com/@fontsource/poppins/-/poppins-4.5.10.tgz#44dbfeacb5d89efca5ad7ad6cc941b2ac1ee424b"
+  integrity sha512-oYZVHsnlwV3VWM1SE/m6SUxVh0QLk5+2wB+lBiXcI7N/0KVQWmV9YykaPqfJHBLvmdya+MAOnv+BQHeLU1vOOw==
+
 "@idena/vrf-js@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@idena/vrf-js/-/vrf-js-1.0.1.tgz#ae893dd7590a8650044b936b921ff426091fe871"
