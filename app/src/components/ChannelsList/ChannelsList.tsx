@@ -93,7 +93,7 @@ function ChannelsList(props: {
                     padding="9px 16px 9px 16px"
                     color="#604297"
                     lineHeight="27px"
-                    fontSize="18px"
+                    fontSize="16px"
                     fontWeight="500"
                     border={
                       props.listEl[virtualItem.index] == props.currentContract
