@@ -15,6 +15,7 @@ import { useToast } from '@chakra-ui/react';
 import MessagesList from '../components/MessagesList/MessagesList';
 import ChannelsList from '../components/ChannelsList/ChannelsList';
 import { Image } from '@chakra-ui/react';
+import warpLogo from '../assets/warp-logo.svg';
 
 initPubSub();
 
@@ -310,7 +311,7 @@ function Chat() {
       </MainModal>
       <Box mb={3} display="flex" justifyContent="space-between" height="72px">
         <Box>
-          <Image src="../../src/assets/warp-logo.svg" height="60px" />
+          <Image src={warpLogo} height="60px" />
         </Box>
         {wallet.address ? (
           <Box display="flex" alignItems="center">

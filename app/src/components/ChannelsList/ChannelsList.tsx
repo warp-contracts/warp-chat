@@ -5,6 +5,7 @@ import { Divider } from '@chakra-ui/react';
 import { WarpContext } from '../../App';
 import MainButton from '../MainButton/MainButton';
 import { Image } from '@chakra-ui/react';
+import plus from '../../assets/plus.svg';
 
 function ChannelsList(props: {
   listEl: any;
@@ -28,7 +29,7 @@ function ChannelsList(props: {
       <Box display="flex" justifyContent="center" paddingBottom="30px">
         <MainButton handleClick={() => props.setChannelModalOpen(true)}>
           <Image
-            src="../../../src/assets/plus.svg"
+            src={plus}
             height="14px"
             width="14px"
             marginRight="5px"
