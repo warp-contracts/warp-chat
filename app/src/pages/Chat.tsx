@@ -1,6 +1,6 @@
 import './Chat.css';
-import { Box, ModalBody } from '@chakra-ui/react';
-import { useState, useEffect, useContext } from 'react';
+import { Box, ModalBody, Button } from '@chakra-ui/react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { subscribe, initPubSub } from 'warp-contracts-pubsub';
 import { useForm } from 'react-hook-form';
 import { ArweaveWebWallet } from 'arweave-wallet-connector';
@@ -36,28 +36,25 @@ function Chat() {
     reset,
     setFocus,
   } = useForm();
+  const channelListRef = useRef(null);
 
   useEffect(() => {
     fetchChannels();
   }, []);
 
-  async function fetchChannels() {
+  async function fetchChannels(id?: string) {
     const response = await fetch(
       `https://d1o5nlqr4okus2.cloudfront.net/gateway/contracts-by-source?id=${chatContractSourceId}`
     ).then((res) => {
       return res.json();
     });
     const contractChannels = response.contracts.map((c) => c.contractId);
-    console.log(contractChannels);
     setChannels(contractChannels);
     !currentContract.id &&
-      setCurrentContract({ id: contractChannels[0], contract: warp.contract(contractChannels[0]) });
+      setCurrentContract({ id: id || contractChannels[0], contract: warp.contract(id || contractChannels[0]) });
+    channelListRef.current && channelListRef.current.scrollTo(contractChannels.indexOf(id));
   }
-  function wait(time) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, time);
-    });
-  }
+
   useEffect(() => {
     async function fetchContractState() {
       const response = await fetch(`https://dre-1.warp.cc/contract?id=${currentContract.id}`).then((res) => {
@@ -228,7 +225,7 @@ function Chat() {
           position: 'top',
         });
         await fetchWcnsContractState();
-        await fetchChannels();
+        await fetchChannels(contractTxId);
         setCurrentContract({ id: contractTxId, contract: warp.contract(contractTxId) });
       } catch (e) {
         errorToast({
@@ -355,6 +352,7 @@ function Chat() {
               currentContract={currentContract.id}
               reset={reset}
               setChannelModalOpen={setChannelModalOpen}
+              ref={channelListRef}
             />
           )}
         </Box>
