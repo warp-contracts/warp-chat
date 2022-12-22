@@ -9,7 +9,7 @@ function MainButton(props: {
 }) {
   return (
     <Button
-      bg="#4BFFA9"
+      bg="green"
       color="buttonblue"
       fontSize="18px"
       fontWeight="700"

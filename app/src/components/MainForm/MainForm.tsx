@@ -9,10 +9,10 @@ function MainForm(props: { handleSubmit: any; register: any; placeholder: string
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <FormControl isRequired mr={5}>
           <Input
-            bg="#FFFFFF;"
+            bg="white"
             borderRadius="4px"
             boxShadow={props.message ? '5px 5px 0px rgba(255, 156, 40, 0.35);' : '5px 5px 0px rgba(31, 0, 156, 0.25);'}
-            color="#797979"
+            color="lightgrey"
             border="2px solid #240070;"
             fontWeight="400"
             fontSize="16px"
@@ -22,10 +22,7 @@ function MainForm(props: { handleSubmit: any; register: any; placeholder: string
             placeholder={props.placeholder}
             {...props.register(props.id)}
             _focus={{
-              // bg: '#9AFFAA',
-              // color: '#004E70',
               outline: 'none',
-              // border: '2px solid #240070;',
               boxShadow: `${
                 props.message ? '5px 5px 0px rgba(255, 156, 40, 0.35);' : '5px 5px 0px rgba(31, 0, 156, 0.25);'
               }`,

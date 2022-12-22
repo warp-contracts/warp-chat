@@ -17,7 +17,6 @@ function MainModal(props: {
   closeOnOverlay: boolean;
   closeButton: boolean;
 }) {
-  const initialRef = useRef(null);
 
   return (
     <Modal trapFocus={false} closeOnOverlayClick={props.closeOnOverlay} isOpen={props.isOpen} onClose={props.onClose}>

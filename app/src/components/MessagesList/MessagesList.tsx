@@ -21,7 +21,6 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
       px={10}
       mt={5}
       overflow="auto"
-      // paddingBottom="30px"
       css={{
         '&::-webkit-scrollbar': {
           width: '10px',
@@ -58,7 +57,7 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
           >
             <Box
               key={props.listEl[virtualItem.index].id}
-              bg="#E2FFBE;"
+              bg="lime"
               border="2px solid #240070;"
               padding="8px 20px 12px 20px"
               boxShadow="5px 5px 0px rgba(255, 156, 40, 0.35);"
@@ -73,7 +72,7 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
                 fontWeight="400"
                 fontSize="13px"
                 lineHeight="19.5px"
-                color="#2E6B64"
+                color="grey"
                 display="flex"
                 justifyContent="space-between"
               >

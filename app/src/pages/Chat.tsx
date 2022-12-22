@@ -1,7 +1,6 @@
 import './Chat.css';
-import { Box, ModalBody, propNames } from '@chakra-ui/react';
-import { Table, Tbody, Tr, Td, TableContainer } from '@chakra-ui/react';
-import { useState, useEffect, useContext, useRef } from 'react';
+import { Box, ModalBody } from '@chakra-ui/react';
+import { useState, useEffect, useContext } from 'react';
 import { subscribe, initPubSub } from 'warp-contracts-pubsub';
 import { useForm } from 'react-hook-form';
 import { ArweaveWebWallet } from 'arweave-wallet-connector';
@@ -49,11 +48,16 @@ function Chat() {
       return res.json();
     });
     const contractChannels = response.contracts.map((c) => c.contractId);
+    console.log(contractChannels);
     setChannels(contractChannels);
     !currentContract.id &&
       setCurrentContract({ id: contractChannels[0], contract: warp.contract(contractChannels[0]) });
   }
-
+  function wait(time) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, time);
+    });
+  }
   useEffect(() => {
     async function fetchContractState() {
       const response = await fetch(`https://dre-1.warp.cc/contract?id=${currentContract.id}`).then((res) => {
@@ -73,6 +77,7 @@ function Chat() {
       return res.json();
     });
     setWcnsState(response.state);
+    console.log('wcns', response.state);
   }
 
   useEffect(() => {
@@ -336,7 +341,7 @@ function Chat() {
       <Box display="flex" width="100%" height="85%">
         <Box
           width="25%"
-          bg="linear-gradient(180deg, #F4E7F9 0%, #EED9F5 100%);"
+          bg="lightpinkgrad"
           boxShadow="5px 5px 0px rgba(31, 0, 156, 0.25);"
           border=" 2px solid #240070;"
           borderRadius="4px"
@@ -356,7 +361,7 @@ function Chat() {
         <Box
           width="75%"
           position="relative"
-          bg="linear-gradient(180deg, #FEFFC7 0%, #FDFFA6 100%);"
+          bg="yellowgrad"
           border="2px solid #240070;"
           ml={5}
           pr={5}

@@ -109,9 +109,7 @@ function ChannelsList(props: {
                         : ''
                     }
                     bg={
-                      props.listEl[virtualItem.index] == props.currentContract
-                        ? 'linear-gradient(180deg, #FEFFC7 0%, #FDFFA6 100%), #FEFFA7;'
-                        : '#EDDCF3;'
+                      props.listEl[virtualItem.index] == props.currentContract ? 'verylightpinkgrad' : 'verylightpink'
                     }
                     _hover={{ background: props.listEl[virtualItem.index] == props.currentContract ? '' : '#FBEEFF' }}
                   >

@@ -2,15 +2,19 @@ import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
 
 const theme = extendTheme({
   colors: {
-    orange: '#ff99d9',
-    yellow: '#f7fc55',
-    green: '#9AFFAA;',
-    blue: '#6880fe',
-    purple: '#9b7cf9',
-    darkgreen: '#008000',
+    green: '#4BFFA9;',
     lightpurple: '#D7A1F9',
     lightpink: '#FFDBE9',
     buttonblue: '#240070',
+    pinkgrad: 'linear-gradient(180deg, #E4D5F7 0%, #D1B7F2 100%);',
+    yellowgrad: 'linear-gradient(180deg, #FEFFC7 0%, #FDFFA6 100%);',
+    lightpinkgrad: 'linear-gradient(180deg, #F4E7F9 0%, #EED9F5 100%);',
+    verylightpink: '#EDDCF3',
+    verylightpinkgrad: 'linear-gradient(180deg, #FEFFC7 0%, #FDFFA6 100%), #FEFFA7',
+    grey: '#2E6B64',
+    lime: '#E2FFBE',
+    lightgrey: '#797979',
+    purple: '#604297',
   },
   fonts: {
     body: 'Poppins',
