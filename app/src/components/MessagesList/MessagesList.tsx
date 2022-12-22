@@ -17,11 +17,11 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
   return (
     <Box
       ref={parentRef}
-      height="82%"
+      height="76%"
       px={10}
-      mt={10}
+      mt={5}
       overflow="auto"
-      paddingBottom="30px"
+      // paddingBottom="30px"
       css={{
         '&::-webkit-scrollbar': {
           width: '10px',
@@ -67,18 +67,22 @@ function MessagesList(props: { listEl: any; stateEl: any }) {
               fontWeight="600"
               fontSize="16px"
               lineHeight="22.4px"
-              color="#240070"
+              color="buttonblue"
             >
-              <Box fontWeight="400" fontSize="13px" lineHeight="19.5px" color="#2E6B64" display="flex">
+              <Box
+                fontWeight="400"
+                fontSize="13px"
+                lineHeight="19.5px"
+                color="#2E6B64"
+                display="flex"
+                justifyContent="space-between"
+              >
                 <Box fontWeight="600">
                   {(props.stateEl.names &&
                     props.stateEl.names[props.listEl[virtualItem.index].creator.toLowerCase()]) ||
                     props.listEl[virtualItem.index].creator}
                 </Box>{' '}
-                <Box>
-                  &nbsp;|&nbsp;
-                  {new Date(parseInt(props.listEl[virtualItem.index].timestamp)).toLocaleString()}
-                </Box>
+                <Box>{new Date(parseInt(props.listEl[virtualItem.index].timestamp)).toLocaleString()}</Box>
               </Box>
               {props.listEl[virtualItem.index].content}
             </Box>

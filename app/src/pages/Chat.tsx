@@ -360,10 +360,19 @@ function Chat() {
           border="2px solid #240070;"
           ml={5}
           pr={5}
-          pb={5}
           boxShadow="5px 5px 0px rgba(31, 0, 156, 0.25);"
           borderRadius="4px"
         >
+          <Box px={10} pt={5} color="buttonblue">
+            View contract in SonAr:{' '}
+            <a
+              href={`https://sonar.warp.cc/#/app/contract/${currentContract.id}`}
+              target="_blank"
+              style={{ color: '' }}
+            >
+              {currentContract.id}
+            </a>
+          </Box>
           <MessagesList listEl={messages} stateEl={wcnsState} />
           <Box position="absolute" bottom={0} width="100%" paddingLeft="40px" paddingRight="70px" paddingBottom="20px">
             <MainForm
