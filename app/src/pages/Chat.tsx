@@ -74,7 +74,6 @@ function Chat() {
       return res.json();
     });
     setWcnsState(response.state);
-    console.log('wcns', response.state);
   }
 
   useEffect(() => {
@@ -134,7 +133,6 @@ function Chat() {
   }
 
   async function handleMetamask() {
-    console.log(MetaMaskOnboarding.isMetaMaskInstalled());
     if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
       errorToast({
         title: 'Metamask not detected.',
@@ -146,7 +144,6 @@ function Chat() {
       return;
     }
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    console.log(accounts);
     await currentContract.contract.connect({
       signer: evmSignature,
       signatureType: 'ethereum',
