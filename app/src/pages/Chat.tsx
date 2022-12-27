@@ -29,6 +29,7 @@ function Chat() {
   const [wcnsButton, setWcnsButton] = useState(false);
   const [wcnsState, setWcnsState] = useState<{ names: any }>({ names: [] });
   const [currentContract, setCurrentContract] = useState({ id: '', contract: null });
+  const [subscription, setSubscription] = useState(null);
   const {
     handleSubmit,
     register,
@@ -76,15 +77,23 @@ function Chat() {
     setWcnsState(response.state);
   }
 
+  async function unsubscribe(sub: any) {
+    await sub.unsubscribe();
+  }
   useEffect(() => {
     async function doSubscribe() {
-      await subscribe(
+      const subscription = await subscribe(
         `states/${currentContract.id}`,
         ({ data }: any) => setMessages(JSON.parse(data).state.messages),
         console.error
       );
+
+      setSubscription(subscription);
     }
-    currentContract.id && doSubscribe();
+    if (subscription) {
+      unsubscribe(subscription);
+    }
+    doSubscribe();
   }, [currentContract.id]);
 
   useEffect(() => {
