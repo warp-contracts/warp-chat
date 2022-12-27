@@ -1,7 +1,9 @@
 export interface ContractState {
   names: {
-    [creator: string]: string;
+    [id: string]: string;
   };
+  owner: string;
+  evolve: string;
 }
 
 export interface ContractAction {
@@ -16,10 +18,10 @@ export interface ContractReadResult {
 export interface ContractInput {
   function: ContractFunction;
   name: string;
-  creator: string;
   id: string;
+  value: string;
 }
 
-export type ContractFunction = 'registerName' | 'getName';
+export type ContractFunction = 'registerName' | 'getName' | 'evolve';
 
 export type ContractResult = { state: ContractState } | { result: ContractReadResult };

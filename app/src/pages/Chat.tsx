@@ -202,7 +202,7 @@ function Chat() {
       });
       return;
     }
-    const initialState = { messages: [] };
+    const initialState = { messages: [], owner: 'jnioZFibZSCcV8o-HkBXYPYEYNib4tqfexP0kCBXX_M', evolve: '' };
     try {
       const { contractTxId } = await warp.createContract.deployFromSourceTx({
         wallet: wallet.signatureType == 'arweave' ? 'use_wallet' : { signer: evmSignature, signatureType: 'ethereum' },

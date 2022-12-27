@@ -32,7 +32,7 @@ describe('Testing Chat contract', () => {
 
     ({ jwk: ownerWallet, address: owner } = await warp.generateWallet());
 
-    initialState = { messages: [] };
+    initialState = { messages: [], owner, evolve: '' };
 
     contractSrc = fs.readFileSync(path.join(__dirname, '../dist/contractChat/contract.js'), 'utf8');
 
@@ -72,6 +72,26 @@ describe('Testing Chat contract', () => {
     expect(cachedValue.state.messages[0]).toEqual({
       id: 1,
       content: 'Asia',
+      creator: owner,
+      timestamp: '1487076708000',
+    });
+  });
+
+  it("should properly evolve contract's source code", async () => {
+    const newSource = fs.readFileSync(path.join(__dirname, './data/evolve-contract-chat.js'), 'utf8');
+
+    const srcTx = await warp.createSourceTx({ src: newSource }, ownerWallet);
+    const newSrcTxId = await warp.saveSourceTx(srcTx);
+
+    await contract.evolve(newSrcTxId);
+
+    await contract.writeInteraction({ function: 'write', content: 'any' });
+
+    const { cachedValue } = await contract.readState();
+    console.log(cachedValue);
+    expect(cachedValue.state.messages[1]).toEqual({
+      id: 2,
+      content: 'Evolve',
       creator: owner,
       timestamp: '1487076708000',
     });

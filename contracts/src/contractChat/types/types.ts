@@ -1,5 +1,7 @@
 export interface ContractState {
   messages: Message[];
+  owner: string;
+  evolve: string;
 }
 
 export interface Message {
@@ -17,8 +19,9 @@ export interface ContractAction {
 export interface ContractInput {
   function: ContractFunction;
   content: string;
+  value: string;
 }
 
-export type ContractFunction = 'write';
+export type ContractFunction = 'write' | 'evolve';
 
 export type ContractResult = { state: ContractState };
