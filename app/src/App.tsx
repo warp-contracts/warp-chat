@@ -20,8 +20,8 @@ interface WarpType {
 export const WarpContext = createContext<WarpType>({} as WarpType);
 function App() {
   const warp = WarpFactory.forMainnet();
-  const chatNsContractId = '36hGgwExqFacqAJcoy6cGXwTZRmGJM3S9uUpXnahLLE';
-  const chatContractSourceId = 'OXt0oMBa2fMiMKOM_e3LnmvYS4kXFIFVGuVEfeYvMWU';
+  const chatNsContractId = 'XzyWPkK5ar_oJ0vGVGRHElAk7E8hqYiSmWMPqlNLi9c';
+  const chatContractSourceId = 'zGNXxDyV1vxb1fcXs-arrGVmhfvWAK6NROKFffkqjtw';
   const wcnsContract = warp.contract(chatNsContractId);
   const warpContext = {
     warp,
