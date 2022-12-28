@@ -375,7 +375,7 @@ function Chat() {
           borderRadius="4px"
         >
           <Box px={10} pt={5} color="buttonblue">
-            View contract in SonAr:{' '}
+            View contract in SonAR:{' '}
             <a
               href={`https://sonar.warp.cc/#/app/contract/${currentContract.id}`}
               target="_blank"
